@@ -1,13 +1,22 @@
 # login_manager
 Basic login management program. The idea of the program will be to implement a basic login service through the console to a python "backend" and database.
 
+# Setup
+
+
+# Tests
+
+
+#Basic Project Description and overview
+
+
+# Project improvements
+
 
 Using
 1. Python
 2. Tkinter as the GUI interface.
-3. 
-
-
+3. sqlite3 as the DB interaction
 
 
 # Some basics
@@ -22,10 +31,14 @@ Using
 # after completed in console do a GUI with python. Something dumb but at least it is something to the effect of actaual working code in the name.
 # Do a forget password, and offer to email the password to the registered email
 
+###Fields (Login)
+1. Username
+2. Password
 
-# Name
-# Last Name
-# phone number
-# username
-# email
-# password, verify passwaord.
+###Fields (Create new user)
+1. First Name
+2. Last Name
+3. Username
+4. Email
+5. Phone Number
+6. Password, verify password.
