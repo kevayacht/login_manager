@@ -19,17 +19,17 @@ Using
 3. sqlite3 as the DB interaction
 
 
-# Some basics
-# Login, Username: Password.
-# Create User,
-# User already exists
-# password check
-# encrypt password somehow.
-# username/password check.
-# email addon
-# email the user.
-# after completed in console do a GUI with python. Something dumb but at least it is something to the effect of actaual working code in the name.
-# Do a forget password, and offer to email the password to the registered email
+Some basics
+Login, Username: Password.
+Create User,
+User already exists
+password check
+encrypt password somehow.
+username/password check.
+email addon
+email the user.
+after completed in console do a GUI with python. Something dumb but at least it is something to the effect of actaual working code in the name.
+Do a forget password, and offer to email the password to the registered email
 
 ###Fields (Login)
 1. Username
