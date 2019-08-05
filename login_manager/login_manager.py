@@ -45,6 +45,9 @@ class LoginBox:
         self.new_password_entry = Entry(show="*")
         self.new_password_confirm_entry = Entry(show="*")
 
+        self.new_success_label = Label(master, text="User Successfully Created!")
+        self.new_success_done_button = Button(master, command=self.done_click, text="Done")
+
         self.back_button = Button(master, command=self.back_click, text="Back")
         self.submit_button = Button(master, command=self.submit_click, text="Submit")
 
@@ -93,6 +96,9 @@ class LoginBox:
         self.retrieve_create_user()
         self.remove_create_user()
 
+        # if all is well the next step can be done
+        self.successful_create_user()
+
     def back_click(self):
         """ Back button clicked """
         switcher = {
@@ -109,6 +115,15 @@ class LoginBox:
         switcher = {
             "login": self.submit_login,
             'create': self.submit_create_user,
+        }
+        func = switcher.get(self.screen_state)
+        func()
+
+    def done_click(self):
+        """ Done Button clicked"""
+        switcher = {
+            "login": self.done_login,
+            'create': self.done_create_user,
         }
         func = switcher.get(self.screen_state)
         func()
@@ -204,11 +219,22 @@ class LoginBox:
 
     def successful_create_user(self):
         """ Forward Successful create user """
-        pass
+        self.new_success_label.pack()
+        self.new_success_done_button.pack()
 
     def failed_create_user(self):
         """ Forward Failed create user """
         pass
+
+    def done_login(self):
+        """ Done button pressed after login and greeting - reset"""
+        pass
+
+    def done_create_user(self):
+        """ Done button pressed after new user created and added to db - reset"""
+        self.new_success_label.pack_forget()
+        self.new_success_done_button.pack_forget()
+        self.home()
 
 
 def main():
