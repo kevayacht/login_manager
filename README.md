@@ -7,7 +7,7 @@ Basic login management program. The idea of the program will be to implement a b
 # Tests
 
 
-#Basic Project Description and overview
+# Basic Project Description and overview
 
 
 # Project improvements
@@ -31,11 +31,11 @@ email the user.
 after completed in console do a GUI with python. Something dumb but at least it is something to the effect of actaual working code in the name.
 Do a forget password, and offer to email the password to the registered email
 
-###Fields (Login)
+### Fields (Login)
 1. Username
 2. Password
 
-###Fields (Create new user)
+### Fields (Create new user)
 1. First Name
 2. Last Name
 3. Username
