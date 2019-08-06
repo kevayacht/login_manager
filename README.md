@@ -2,10 +2,15 @@
 Basic login management program. The idea of the program will be to implement a basic login service through the console to a python "backend" and database.
 
 # Setup
+A Virtual Environment needs to be set up for the package to be tested in.
+A blank Venv will suffice.
+simply run the following: 
+1. make init
+2. make test
 
 
 # Tests
-
+*Tests are all located in the tests folder*
 
 # Basic Project Description and overview
 
@@ -42,3 +47,7 @@ Do a forget password, and offer to email the password to the registered email
 4. Email
 5. Phone Number
 6. Password, verify password.
+
+
+TODO:
+clear entry box'es
