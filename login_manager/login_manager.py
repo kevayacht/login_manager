@@ -129,11 +129,18 @@ class LoginBox:
         func()
 
     def retrieve_login(self):
-        print(self.username_entry.get())
-        print(self.password_entry.get())
+        login = {"username": self.username_entry.get(),
+                 "password": self.password_entry.get(),
+        }
+
+        self.username_entry.delete(0, 'end')
+        self.password_entry.delete(0, 'end')
+
+        return find_user_db(login["username"])
 
     def verify_login(self):
         """ Verify login details provided. """
+
         # no boxes may be empty.
         # check that there are no funny chars, handle spaces in strange places.
         # python analysis on the entries.
@@ -195,6 +202,13 @@ class LoginBox:
         self.new_password_confirm_entry.pack_forget()
         self.back_button.pack_forget()
         self.submit_button.pack_forget()
+        self.new_name_entry.delete(0, 'end')
+        self.new_last_name_entry.delete(0, 'end')
+        self.new_username_entry.delete(0, 'end')
+        self.new_email_entry.delete(0, 'end')
+        self.new_phone_num_entry.delete(0, 'end')
+        self.new_password_entry.delete(0, 'end')
+        self.new_password_confirm_entry.delete(0, 'end')
 
     def retrieve_create_user(self):
         """ Retrieves the create new user data"""
@@ -206,7 +220,6 @@ class LoginBox:
                 "phone_number": self.new_phone_num_entry.get(),
                 "password": self.new_password_entry.get()}
         # there should be verifications and checking to make sure there isn't garbage being entered into the db.
-
         create_user_db(user)
 
     def successful_login(self):
@@ -220,6 +233,7 @@ class LoginBox:
     def successful_create_user(self):
         """ Forward Successful create user """
         self.new_success_label.pack()
+        # TODO:  welcome message personalized
         self.new_success_done_button.pack()
 
     def failed_create_user(self):
