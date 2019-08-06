@@ -1,4 +1,4 @@
-from tkinter import Tk, Label, Button, Entry
+from tkinter import Tk, Label, Button, Entry, StringVar
 from helper import create_db_table, create_user_db, find_user_db
 
 
@@ -45,11 +45,21 @@ class LoginBox:
         self.new_password_entry = Entry(show="*")
         self.new_password_confirm_entry = Entry(show="*")
 
+        self.login_success_label = Label(master, text="User Successfully Authenticated!")
         self.new_success_label = Label(master, text="User Successfully Created!")
-        self.new_success_done_button = Button(master, command=self.done_click, text="Done")
+        self.done_button = Button(master, command=self.done_click, text="Done")
 
         self.back_button = Button(master, command=self.back_click, text="Back")
         self.submit_button = Button(master, command=self.submit_click, text="Submit")
+
+        self.welcome_label_text = StringVar()
+        self.reject_label_text = StringVar()
+
+        self.welcome_label = Label(master, textvariable=self.welcome_label_text)
+        self.reject_label = Label(master, textvariable=self.reject_label_text)
+
+        self.new_user_dictionary = {}
+        self.current_user_dictionary = {}
 
     def home(self):
         """ Pack the home screen objects"""
@@ -91,12 +101,13 @@ class LoginBox:
     def submit_login(self):
         self.retrieve_login()
         self.verify_login()
+        self.remove_login()
+        self.successful_login()
 
     def submit_create_user(self):
         self.retrieve_create_user()
+        self.verify_new_user()
         self.remove_create_user()
-
-        # if all is well the next step can be done
         self.successful_create_user()
 
     def back_click(self):
@@ -129,14 +140,13 @@ class LoginBox:
         func()
 
     def retrieve_login(self):
-        login = {"username": self.username_entry.get(),
-                 "password": self.password_entry.get(),
+        self.current_user_dictionary = {"username": self.username_entry.get(),
+                                        "password": self.password_entry.get(),
         }
 
-        self.username_entry.delete(0, 'end')
-        self.password_entry.delete(0, 'end')
+        self.remove_login()
 
-        return find_user_db(login["username"])
+        return find_user_db(self.current_user_dictionary["username"])
 
     def verify_login(self):
         """ Verify login details provided. """
@@ -145,6 +155,10 @@ class LoginBox:
         # check that there are no funny chars, handle spaces in strange places.
         # python analysis on the entries.
         # save that stuff in the db.
+        pass
+
+    def verify_new_user(self):
+        """ Verify new user details provided. """
         pass
 
     def remove_login(self):
@@ -156,6 +170,8 @@ class LoginBox:
         self.password_entry.pack_forget()
         self.back_button.pack_forget()
         self.submit_button.pack_forget()
+        self.username_entry.delete(0, 'end')
+        self.password_entry.delete(0, 'end')
 
     def create_new_user_click(self):
         """New User button clicked """
@@ -213,18 +229,23 @@ class LoginBox:
     def retrieve_create_user(self):
         """ Retrieves the create new user data"""
         # db interaction now.
-        user = {"first_name": self.new_name_entry.get(),
-                "last_name": self.new_last_name_entry.get(),
-                "username": self.new_username_entry.get(),
-                "email": self.new_email_entry.get(),
-                "phone_number": self.new_phone_num_entry.get(),
-                "password": self.new_password_entry.get()}
+        self.new_user_dictionary = {"first_name": self.new_name_entry.get(),
+                                    "last_name": self.new_last_name_entry.get(),
+                                    "username": self.new_username_entry.get(),
+                                    "email": self.new_email_entry.get(),
+                                    "phone_number": self.new_phone_num_entry.get(),
+                                    "password": self.new_password_entry.get()}
         # there should be verifications and checking to make sure there isn't garbage being entered into the db.
-        create_user_db(user)
+        create_user_db(self.new_user_dictionary)
 
     def successful_login(self):
         """ Forward Successful login """
-        pass
+        self.login_success_label.pack()
+        self.welcome_label_text.set("Welcome"
+                                    + " ".join(self.new_user_dictionary["first_name"])
+                                    + " ".join(self.new_user_dictionary["last_name"]))
+        self.welcome_label.pack()
+        self.done_button.pack()
 
     def failed_login(self):
         """ Forward Failed login """
@@ -233,8 +254,11 @@ class LoginBox:
     def successful_create_user(self):
         """ Forward Successful create user """
         self.new_success_label.pack()
-        # TODO:  welcome message personalized
-        self.new_success_done_button.pack()
+        self.welcome_label_text.set("Welcome"
+                                    + " ".join(self.new_user_dictionary["first_name"])
+                                    + " ".join(self.new_user_dictionary["last_name"]))
+        self.welcome_label.pack()
+        self.done_button.pack()
 
     def failed_create_user(self):
         """ Forward Failed create user """
@@ -242,12 +266,18 @@ class LoginBox:
 
     def done_login(self):
         """ Done button pressed after login and greeting - reset"""
-        pass
+        self.login_success_label.pack_forget()
+        self.welcome_label.pack_forget()
+        self.done_button.pack_forget()
+        self.home()
+        # TODO: Continue here
+
 
     def done_create_user(self):
         """ Done button pressed after new user created and added to db - reset"""
         self.new_success_label.pack_forget()
-        self.new_success_done_button.pack_forget()
+        self.welcome_label.pack_forget()
+        self.done_button.pack_forget()
         self.home()
 
 
