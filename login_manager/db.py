@@ -25,5 +25,5 @@ def find_user_db(username):
     print("username = [%s]" % username)
     curs = conn.cursor()
     curs.execute('SELECT password FROM users WHERE username =?;', (username,))
-    print(curs.fetchone())
-    return curs.fetchone()
+    password = curs.fetchone()[0]
+    return password
