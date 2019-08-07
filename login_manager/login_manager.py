@@ -1,5 +1,6 @@
 from tkinter import Tk, Label, Button, Entry, StringVar
-from helper import create_db_table, create_user_db, find_user_db
+from db import create_db_table, create_user_db, find_user_db
+from helper import raise_above_all
 
 
 class LoginBox:
@@ -8,6 +9,7 @@ class LoginBox:
         master.title("Login Manger")
         master.geometry("300x430+500+100")
         master.resizable(0, 0)
+        raise_above_all(master)
 
         self.screen_state = 'init'
 
@@ -45,6 +47,7 @@ class LoginBox:
         self.new_password_entry = Entry(show="*")
         self.new_password_confirm_entry = Entry(show="*")
 
+        self.login_failure_label = Label(master, text="Authentication Unsuccessful.\nDumbass.")
         self.login_success_label = Label(master, text="User Successfully Authenticated!")
         self.new_success_label = Label(master, text="User Successfully Created!")
         self.done_button = Button(master, command=self.done_click, text="Done")
@@ -58,6 +61,7 @@ class LoginBox:
         self.welcome_label = Label(master, textvariable=self.welcome_label_text)
         self.reject_label = Label(master, textvariable=self.reject_label_text)
 
+        self.current_user_db_password = None
         self.new_user_dictionary = {}
         self.current_user_dictionary = {}
 
@@ -100,15 +104,23 @@ class LoginBox:
 
     def submit_login(self):
         self.retrieve_login()
-        self.verify_login()
+        success = self.verify_login()
         self.remove_login()
-        self.successful_login()
+
+        if success:
+            self.successful_login()
+        else:
+            self.failed_login()
 
     def submit_create_user(self):
         self.retrieve_create_user()
-        self.verify_new_user()
+        success = self.verify_new_user()
         self.remove_create_user()
-        self.successful_create_user()
+        if success:
+            self.successful_create_user()
+        else:
+            self.failed_create_user()
+
 
     def back_click(self):
         """ Back button clicked """
@@ -142,24 +154,39 @@ class LoginBox:
     def retrieve_login(self):
         self.current_user_dictionary = {"username": self.username_entry.get(),
                                         "password": self.password_entry.get(),
-        }
+                                        }
 
         self.remove_login()
 
-        return find_user_db(self.current_user_dictionary["username"])
+        self.current_user_db_password = find_user_db(self.current_user_dictionary["username"])
 
     def verify_login(self):
-        """ Verify login details provided. """
+        """ Verify login details provided. This is straight verification as the create user process will route out any
+        issues regarding readable characters. """
 
-        # no boxes may be empty.
-        # check that there are no funny chars, handle spaces in strange places.
-        # python analysis on the entries.
-        # save that stuff in the db.
-        pass
+        if self.current_user_db_password == self.current_user_dictionary["password"]:
+            success = True
+            self.welcome_label_text.set("Welcome"
+                                        + " ".join(self.new_user_dictionary["first_name"])
+                                        + " ".join(self.new_user_dictionary["last_name"]))
+
+        elif self.current_user_db_password is None:
+            success = False
+            self.reject_label_text.set("There is no such user registered,\n perhaps you got confused \nbecause there "
+                                       "were too many options?")
+        else:
+            success = False
+            self.reject_label_text.set("Invalid username or password - I suggest a password manager")
+
+        return success
 
     def verify_new_user(self):
         """ Verify new user details provided. """
-        pass
+
+        # 1. Check if the username is available.
+        # 2. check that all fields contain data.
+        # 3.
+        return True
 
     def remove_login(self):
         """ Removes the login elements """
@@ -235,21 +262,22 @@ class LoginBox:
                                     "email": self.new_email_entry.get(),
                                     "phone_number": self.new_phone_num_entry.get(),
                                     "password": self.new_password_entry.get()}
+
+        self.verify_new_user()
         # there should be verifications and checking to make sure there isn't garbage being entered into the db.
         create_user_db(self.new_user_dictionary)
 
     def successful_login(self):
         """ Forward Successful login """
         self.login_success_label.pack()
-        self.welcome_label_text.set("Welcome"
-                                    + " ".join(self.new_user_dictionary["first_name"])
-                                    + " ".join(self.new_user_dictionary["last_name"]))
         self.welcome_label.pack()
         self.done_button.pack()
 
     def failed_login(self):
         """ Forward Failed login """
-        pass
+        self.login_failure_label.pack()
+        self.reject_label.pack()
+        self.done_button.pack()
 
     def successful_create_user(self):
         """ Forward Successful create user """
@@ -267,11 +295,11 @@ class LoginBox:
     def done_login(self):
         """ Done button pressed after login and greeting - reset"""
         self.login_success_label.pack_forget()
+        self.login_failure_label.pack_forget()
         self.welcome_label.pack_forget()
+        self.reject_label.pack_forget()
         self.done_button.pack_forget()
         self.home()
-        # TODO: Continue here
-
 
     def done_create_user(self):
         """ Done button pressed after new user created and added to db - reset"""
