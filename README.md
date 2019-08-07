@@ -23,6 +23,11 @@ This is not the best or greatest, but a fair and honest attempt at a easy progra
 ## Additionals
 1. Password hashing.
 2. Keep count of the number of login attempts (Successes/Failures).
+3. Should not be able to create a duplicate username.
+4. Must have a password, passwords must match
+5. do a popup message to indicate what data we still need to have entered.
+6. Password should be longer than 8 chars, include numeric values, and other characters.
+7. Do another call to the db if login successful and welcome the user with their name ans surname.
 
 ## Setup
 A Virtual Environment needs to be set up for the package to be tested in.
