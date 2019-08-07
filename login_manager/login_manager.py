@@ -283,8 +283,8 @@ class LoginBox:
         """ Forward Successful create user """
         self.new_success_label.pack()
         self.welcome_label_text.set("Welcome"
-                                    + " ".join(self.new_user_dictionary["first_name"])
-                                    + " ".join(self.new_user_dictionary["last_name"]))
+                                    + " " + self.new_user_dictionary["first_name"]
+                                    + " " + self.new_user_dictionary["last_name"])
         self.welcome_label.pack()
         self.done_button.pack()
 
