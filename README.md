@@ -20,6 +20,10 @@ This is not the best or greatest, but a fair and honest attempt at a easy progra
 13. Git interaction. (see all commits)
 14. Refactoring possibilities. (cleaner code)
 
+## Additionals
+1. Password hashing.
+2. Keep count of the number of login attempts (Successes/Failures).
+
 ## Setup
 A Virtual Environment needs to be set up for the package to be tested in.
 A blank Venv will suffice.
