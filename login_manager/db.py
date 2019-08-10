@@ -22,8 +22,18 @@ def create_user_db(user):
 
 def find_user_db(username):
     """ SQL Select statement that preserves parameter safety"""
-    print("username = [%s]" % username)
     curs = conn.cursor()
     curs.execute('SELECT password FROM users WHERE username =?;', (username,))
     password = curs.fetchone()[0]
     return password
+
+
+def get_user_detail(username):
+    """ This SQL SELECT query will retireve the user data we need to verify add on's with. """
+    curs = conn.cursor()
+    curs.execute('SELECT * FROM users WHERE username =?;', (username,))
+    data = curs.fetchone()
+    return data
+
+
+
