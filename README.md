@@ -3,6 +3,8 @@ Basic login management program. The idea of the program will be to implement a b
 
 This is not the best or greatest, but a fair and honest attempt at a easy program in python with a visual GUI/interface.
 
+The App is basically a playing application that will continuously cycle through a login or new user registration sequence. 
+
 ## Goal (The learning man!)
 *the goal of this excessive was to get a project down and improve use of python in an actual application*
 1. Python 3 use.
@@ -21,7 +23,7 @@ This is not the best or greatest, but a fair and honest attempt at a easy progra
 14. Refactoring possibilities. (cleaner code)
 15. Tuple and list to dictionary.
 
-## Additionals
+## Additions to Application
 1. Password hashing.
 2. Keep count of the number of login attempts (Successes/Failures).
 3. Should not be able to create a duplicate username.
@@ -39,6 +41,8 @@ simply run the following:
 
 ## Tests
 *Tests are all located in the tests folder*
+
+GUI based testing is extra hard. Make an effort.
 
 ## Basic Project Description and overview
 
