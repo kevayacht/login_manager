@@ -19,6 +19,7 @@ This is not the best or greatest, but a fair and honest attempt at a easy progra
 12. Proper importing.
 13. Git interaction. (see all commits)
 14. Refactoring possibilities. (cleaner code)
+15. Tuple and list to dictionary.
 
 ## Additionals
 1. Password hashing.
