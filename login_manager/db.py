@@ -13,18 +13,23 @@ def create_db_table():
 def create_user_db(user):
     """ SQL Insert statement that preserves parameter safety"""
     keys = ','.join(user.keys())
-    ques = ','.join(list('?'*len(user)))
+    ques = ','.join(list('?' * len(user)))
     values = tuple(user.values())
     curs = conn.cursor()
-    curs.execute('INSERT INTO users ('+keys+') VALUES ('+ques+')', values)
+    curs.execute('INSERT INTO users (' + keys + ') VALUES (' + ques + ')', values)
     conn.commit()
 
 
 def find_user_db(username):
     """ SQL Select statement that preserves parameter safety"""
-    curs = conn.cursor()
-    curs.execute('SELECT password FROM users WHERE username =?;', (username,))
-    password = curs.fetchone()[0]
+    # try
+    # except NoneType
+    try:
+        curs = conn.cursor()
+        curs.execute('SELECT password FROM users WHERE username =?;', (username,))
+        password = curs.fetchone()[0]
+    except TypeError as e:
+        return ''
     return password
 
 
@@ -34,6 +39,3 @@ def get_user_detail(username):
     curs.execute('SELECT * FROM users WHERE username =?;', (username,))
     data = curs.fetchone()
     return data
-
-
-
