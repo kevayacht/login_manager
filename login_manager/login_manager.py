@@ -1,5 +1,5 @@
 from tkinter import Tk, Label, Button, Entry, StringVar
-from db import create_db_table, create_user_db, find_user_db
+from db import create_db_table, create_user_db, find_user_db, get_user_detail
 from helper import raise_above_all
 
 
@@ -11,6 +11,7 @@ class LoginBox:
         master.resizable(0, 0)
         raise_above_all(master)
 
+        # state variable
         self.screen_state = 'init'
 
         # home screen objects
@@ -47,6 +48,7 @@ class LoginBox:
         self.new_password_entry = Entry(show="*")
         self.new_password_confirm_entry = Entry(show="*")
 
+        # special labels
         self.login_failure_label = Label(master, text="Authentication Unsuccessful.\nDumbass.")
         self.login_success_label = Label(master, text="User Successfully Authenticated!")
         self.new_success_label = Label(master, text="User Successfully Created!")
@@ -62,8 +64,10 @@ class LoginBox:
         self.reject_label = Label(master, textvariable=self.reject_label_text)
 
         self.current_user_db_password = None
+        self.fields = ['first_name', 'last_name', 'username', 'email', 'phone_number', 'password']
         self.new_user_dictionary = {}
-        self.current_user_dictionary = {}
+        self.current_user_data_dictionary = {}
+        self.login_user_dictionary = {}
 
     def home(self):
         """ Pack the home screen objects"""
@@ -104,10 +108,11 @@ class LoginBox:
 
     def submit_login(self):
         self.retrieve_login()
-        success = self.verify_login()
         self.remove_login()
 
+        success = self.verify_login()
         if success:
+            self.get_additional_data()
             self.successful_login()
         else:
             self.failed_login()
@@ -120,7 +125,6 @@ class LoginBox:
             self.successful_create_user()
         else:
             self.failed_create_user()
-
 
     def back_click(self):
         """ Back button clicked """
@@ -152,37 +156,32 @@ class LoginBox:
         func()
 
     def retrieve_login(self):
-        self.current_user_dictionary = {"username": self.username_entry.get(),
-                                        "password": self.password_entry.get(),
-                                        }
+        self.login_user_dictionary = {  "username": self.username_entry.get(),
+                                        "password": self.password_entry.get()}
 
         self.remove_login()
 
-        self.current_user_db_password = find_user_db(self.current_user_dictionary["username"])
+        self.current_user_db_password = find_user_db(self.login_user_dictionary["username"])
 
     def verify_login(self):
         """ Verify login details provided. This is straight verification as the create user process will route out any
         issues regarding readable characters. """
 
-        if self.current_user_db_password == self.current_user_dictionary["password"]:
+        if self.current_user_db_password == self.login_user_dictionary["password"]:
             success = True
-            self.welcome_label_text.set("Welcome"
-                                        + " ".join(self.new_user_dictionary["first_name"])
-                                        + " ".join(self.new_user_dictionary["last_name"]))
 
         elif self.current_user_db_password is None:
             success = False
-            self.reject_label_text.set("There is no such user registered,\n perhaps you got confused \nbecause there "
-                                       "were too many options?")
+
         else:
             success = False
-            self.reject_label_text.set("Invalid username or password - I suggest a password manager")
 
         return success
 
     def verify_new_user(self):
         """ Verify new user details provided. """
-
+        if '' in self.new_user_dictionary.values(): # nothing contained in the entry boxes
+            pass
         # 1. Check if the username is available.
         # 2. check that all fields contain data.
         # 3.
@@ -253,6 +252,11 @@ class LoginBox:
         self.new_password_entry.delete(0, 'end')
         self.new_password_confirm_entry.delete(0, 'end')
 
+    def get_additional_data(self):
+        data = get_user_detail(self.login_user_dictionary["username"])
+        self.current_user_data_dictionary = dict(zip(self.fields, data))
+        # print(self.current_user_data_dictionary)
+
     def retrieve_create_user(self):
         """ Retrieves the create new user data"""
         # db interaction now.
@@ -269,12 +273,21 @@ class LoginBox:
 
     def successful_login(self):
         """ Forward Successful login """
+        self.welcome_label_text.set("Welcome"
+                                    + " " + self.current_user_data_dictionary["first_name"]
+                                    + " " + self.current_user_data_dictionary["last_name"])
+
         self.login_success_label.pack()
         self.welcome_label.pack()
         self.done_button.pack()
 
     def failed_login(self):
         """ Forward Failed login """
+        self.reject_label_text.set("There is no such user registered,\n perhaps you got confused \nbecause there "
+                                   "were too many options?")
+
+        self.reject_label_text.set("Invalid username or password - I suggest a password manager")
+
         self.login_failure_label.pack()
         self.reject_label.pack()
         self.done_button.pack()
@@ -290,6 +303,9 @@ class LoginBox:
 
     def failed_create_user(self):
         """ Forward Failed create user """
+        # failures can be due to:
+        # 1. More data needed.
+        # 2. Username taken
         pass
 
     def done_login(self):
