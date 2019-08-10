@@ -5,6 +5,7 @@ from helper import raise_above_all
 
 class LoginBox:
     def __init__(self, master):
+        """ Class init Method"""
         self.master = master
         master.title("Login Manger")
         master.geometry("300x430+500+100")
@@ -82,8 +83,18 @@ class LoginBox:
         self.login_button.pack_forget()
         self.login_new_user.pack_forget()
 
+    def clear_login_data(self):
+        """ Clear the dict data for login and login user data"""
+        self.login_user_dictionary = {}
+        self.current_user_data_dictionary = {}
+
+    def clear_new_user_data(self):
+        """ Clea the dict data for new user"""
+        self.new_user_dictionary = {}
+
     def login_click(self):
         """ Login button clicked """
+        self.clear_login_data()
         self.remove_home_pack()
         self.build_login()
 
@@ -158,23 +169,20 @@ class LoginBox:
     def retrieve_login(self):
         self.login_user_dictionary = {  "username": self.username_entry.get(),
                                         "password": self.password_entry.get()}
-
         self.remove_login()
 
-        self.current_user_db_password = find_user_db(self.login_user_dictionary["username"])
+        if self.login_user_dictionary["password"] == '' or None:
+            pass
+
+        else:
+            self.current_user_db_password = find_user_db(self.login_user_dictionary["username"])
 
     def verify_login(self):
-        """ Verify login details provided. This is straight verification as the create user process will route out any
-        issues regarding readable characters. """
+        """ Verify login details provided. Assume not matching until proved otherwise """
+        success = False
 
         if self.current_user_db_password == self.login_user_dictionary["password"]:
             success = True
-
-        elif self.current_user_db_password is None:
-            success = False
-
-        else:
-            success = False
 
         return success
 
@@ -255,7 +263,6 @@ class LoginBox:
     def get_additional_data(self):
         data = get_user_detail(self.login_user_dictionary["username"])
         self.current_user_data_dictionary = dict(zip(self.fields, data))
-        # print(self.current_user_data_dictionary)
 
     def retrieve_create_user(self):
         """ Retrieves the create new user data"""
@@ -286,7 +293,7 @@ class LoginBox:
         self.reject_label_text.set("There is no such user registered,\n perhaps you got confused \nbecause there "
                                    "were too many options?")
 
-        self.reject_label_text.set("Invalid username or password - I suggest a password manager")
+        # self.reject_label_text.set("Invalid username or password - I suggest a password manager")
 
         self.login_failure_label.pack()
         self.reject_label.pack()
