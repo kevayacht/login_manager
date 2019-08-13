@@ -1,9 +1,27 @@
 from tkinter import Tk, Label, Button, Entry, StringVar
 from db import create_db_table, create_user_db, find_user_db, get_user_detail
-from helper import raise_above_all
+from helper import raise_above_all, popup_message
+from tkinter import ttk
+
+
+# def popup_message():
+#     popup = Tk()
+#     popup.wm_title("Error")
+#     popup.geometry("250x150+525+150")
+#     raise_above_all(popup)
+#
+#     message_lable = Label(popup, text="--Dumbass--\n\nYou have not populated\n all the required data fields.\n "
+#                                       "Did you get confused?\n")
+#     message_lable.pack(side='top')
+#
+#     ok_button = Button(popup, text="Yes, I Apologise", command=popup.destroy)
+#     ok_button.pack()
+#     popup.mainloop()
 
 
 class LoginBox:
+    """ Login Manager GUI Box Class """
+
     def __init__(self, master):
         """ Class init Method"""
         self.master = master
@@ -34,26 +52,26 @@ class LoginBox:
 
         # create new user screen objects
         self.new_greeting_label = Label(master, text="Please enter your details")
-        self.new_name_label = Label(text="First Name")
+        self.new_first_name_label = Label(text="First Name")
         self.new_last_name_label = Label(text="Last name")
         self.new_username_label = Label(text="Username:")
         self.new_email_label = Label(text="Email Address")
-        self.new_phone_num_label = Label(text="Phone Number")
+        self.new_phone_number_label = Label(text="Phone Number")
         self.new_password_label = Label(text="Password:")
         self.new_password_confirm_label = Label(text="Re-enter Password")
-        self.new_name_entry = Entry()
+        self.new_first_name_entry = Entry()
         self.new_last_name_entry = Entry()
         self.new_username_entry = Entry()
         self.new_email_entry = Entry()
-        self.new_phone_num_entry = Entry()
+        self.new_phone_number_entry = Entry()
         self.new_password_entry = Entry(show="*")
         self.new_password_confirm_entry = Entry(show="*")
 
         # special labels
-        self.login_failure_label = Label(master, text="Authentication unsuccessful.\nDumbass.")
-        self.create_failure_label = Label(master, text="User could not be created.\nDumbass.")
-        self.login_success_label = Label(master, text="User Successfully Authenticated!")
-        self.new_success_label = Label(master, text="User Successfully Created!")
+        self.login_failure_label = Label(master, text="--Dumbass--\nAuthentication unsuccessful.\n")
+        self.create_failure_label = Label(master, text="--Dumbass--\nUser could not be created.\n")
+        self.login_success_label = Label(master, text="User successfully authenticated!")
+        self.new_success_label = Label(master, text="User successfully created!")
         self.done_button = Button(master, command=self.done_click, text="Done")
 
         self.back_button = Button(master, command=self.back_click, text="Back")
@@ -70,6 +88,7 @@ class LoginBox:
         self.new_user_dictionary = {}
         self.current_user_data_dictionary = {}
         self.login_user_dictionary = {}
+        self.new_user_bad_fields = []
 
     def home(self):
         """ Pack the home screen objects"""
@@ -132,8 +151,9 @@ class LoginBox:
     def submit_create_user(self):
         self.retrieve_create_user()
         success = self.verify_new_user()
-        self.remove_create_user()
+
         if success:
+            self.remove_create_user()
             self.successful_create_user()
         else:
             self.failed_create_user()
@@ -168,8 +188,8 @@ class LoginBox:
         func()
 
     def retrieve_login(self):
-        self.login_user_dictionary = {  "username": self.username_entry.get(),
-                                        "password": self.password_entry.get()}
+        self.login_user_dictionary = {"username": self.username_entry.get(),
+                                      "password": self.password_entry.get()}
         self.remove_login()
 
         if self.login_user_dictionary["password"] == '' or None:
@@ -187,17 +207,27 @@ class LoginBox:
 
         return success
 
-    def verify_new_user(self):
+    def verify_new_user(self, bad_list=None):
         """ Verify new user details provided. """
         success = True
         if '' in self.new_user_dictionary.values():  # nothing contained in the entry boxes
             success = False
 
-        print(self.new_user_dictionary.get(''))  #TODO: this does not work, needs more.
+            for key, value in self.new_user_dictionary.items():
+                if value == '':
+                    self.new_user_bad_fields.append(key)
+            print(self.new_user_bad_fields)
 
-        # 1. Check if the username is available.
-        # 2. check that all fields contain data.
-        # 3.
+            for i in range(len(self.new_user_bad_fields)):
+                code_string = "self.new_" + self.new_user_bad_fields[i] + "_entry.config(background='red')"
+                print(code_string)
+                exec(code_string)
+
+            # TODO: get all the keys, and normalize those that are not empty back to white.,
+            #  also dont progress until we
+            #  have the data we need.
+            #  also clear the "troublesome" list
+
         return success
 
     def remove_login(self):
@@ -221,16 +251,16 @@ class LoginBox:
         """ Build/Pack Create new user screen """
         self.screen_state = 'create'
         self.new_greeting_label.pack()
-        self.new_name_label.pack()
-        self.new_name_entry.pack()
+        self.new_first_name_label.pack()
+        self.new_first_name_entry.pack()
         self.new_last_name_label.pack()
         self.new_last_name_entry.pack()
         self.new_username_label.pack()
         self.new_username_entry.pack()
         self.new_email_label.pack()
         self.new_email_entry.pack()
-        self.new_phone_num_label.pack()
-        self.new_phone_num_entry.pack()
+        self.new_phone_number_label.pack()
+        self.new_phone_number_entry.pack()
         self.new_password_label.pack()
         self.new_password_entry.pack()
         self.new_password_confirm_label.pack()
@@ -241,27 +271,27 @@ class LoginBox:
     def remove_create_user(self):
         """ Removes the create new user elements"""
         self.new_greeting_label.pack_forget()
-        self.new_name_label.pack_forget()
-        self.new_name_entry.pack_forget()
+        self.new_first_name_label.pack_forget()
+        self.new_first_name_entry.pack_forget()
         self.new_last_name_label.pack_forget()
         self.new_last_name_entry.pack_forget()
         self.new_username_label.pack_forget()
         self.new_username_entry.pack_forget()
         self.new_email_label.pack_forget()
         self.new_email_entry.pack_forget()
-        self.new_phone_num_label.pack_forget()
-        self.new_phone_num_entry.pack_forget()
+        self.new_phone_number_label.pack_forget()
+        self.new_phone_number_entry.pack_forget()
         self.new_password_label.pack_forget()
         self.new_password_entry.pack_forget()
         self.new_password_confirm_label.pack_forget()
         self.new_password_confirm_entry.pack_forget()
         self.back_button.pack_forget()
         self.submit_button.pack_forget()
-        self.new_name_entry.delete(0, 'end')
+        self.new_first_name_entry.delete(0, 'end')
         self.new_last_name_entry.delete(0, 'end')
         self.new_username_entry.delete(0, 'end')
         self.new_email_entry.delete(0, 'end')
-        self.new_phone_num_entry.delete(0, 'end')
+        self.new_phone_number_entry.delete(0, 'end')
         self.new_password_entry.delete(0, 'end')
         self.new_password_confirm_entry.delete(0, 'end')
 
@@ -272,11 +302,11 @@ class LoginBox:
     def retrieve_create_user(self):
         """ Retrieves the create new user data"""
         # db interaction now.
-        self.new_user_dictionary = {"first_name": self.new_name_entry.get(),
+        self.new_user_dictionary = {"first_name": self.new_first_name_entry.get(),
                                     "last_name": self.new_last_name_entry.get(),
                                     "username": self.new_username_entry.get(),
                                     "email": self.new_email_entry.get(),
-                                    "phone_number": self.new_phone_num_entry.get(),
+                                    "phone_number": self.new_phone_number_entry.get(),
                                     "password": self.new_password_entry.get()}
 
         self.verify_new_user()
@@ -297,9 +327,6 @@ class LoginBox:
         """ Forward Failed login """
         self.reject_label_text.set("There is no such user registered,\n perhaps you got confused \nbecause there "
                                    "were too many options?")
-
-        # self.reject_label_text.set("Invalid username or password - I suggest a password manager")
-
         self.login_failure_label.pack()
         self.reject_label.pack()
         self.done_button.pack()
@@ -315,11 +342,14 @@ class LoginBox:
 
     def failed_create_user(self):
         """ Forward Failed create user """
-        self.reject_label_text.set("You have fields incomplete,\n perhaps you got confused\nbecause there "
-                                   "were\ntoo many requirements?")
-        self.create_failure_label.pack()
-        self.reject_label.pack()
-        self.done_button.pack()
+        # popup window
+        popup_message()
+
+        # TODO: also a bug where we go, back after this, fix it for future.
+        # self.reject_label_text.set("You have not populated\n all the required data fields.\n Did you got confused?")
+        # self.create_failure_label.pack()
+        # self.reject_label.pack()
+        # self.done_button.pack()
         # failures can be due to:
         # 1. More data needed.
         # 2. Username taken
