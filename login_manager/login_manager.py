@@ -50,7 +50,8 @@ class LoginBox:
         self.new_password_confirm_entry = Entry(show="*")
 
         # special labels
-        self.login_failure_label = Label(master, text="Authentication Unsuccessful.\nDumbass.")
+        self.login_failure_label = Label(master, text="Authentication unsuccessful.\nDumbass.")
+        self.create_failure_label = Label(master, text="User could not be created.\nDumbass.")
         self.login_success_label = Label(master, text="User Successfully Authenticated!")
         self.new_success_label = Label(master, text="User Successfully Created!")
         self.done_button = Button(master, command=self.done_click, text="Done")
@@ -188,12 +189,16 @@ class LoginBox:
 
     def verify_new_user(self):
         """ Verify new user details provided. """
-        if '' in self.new_user_dictionary.values(): # nothing contained in the entry boxes
-            pass
+        success = True
+        if '' in self.new_user_dictionary.values():  # nothing contained in the entry boxes
+            success = False
+
+        print(self.new_user_dictionary.get(''))  #TODO: this does not work, needs more.
+
         # 1. Check if the username is available.
         # 2. check that all fields contain data.
         # 3.
-        return True
+        return success
 
     def remove_login(self):
         """ Removes the login elements """
@@ -310,10 +315,14 @@ class LoginBox:
 
     def failed_create_user(self):
         """ Forward Failed create user """
+        self.reject_label_text.set("You have fields incomplete,\n perhaps you got confused\nbecause there "
+                                   "were\ntoo many requirements?")
+        self.create_failure_label.pack()
+        self.reject_label.pack()
+        self.done_button.pack()
         # failures can be due to:
         # 1. More data needed.
         # 2. Username taken
-        pass
 
     def done_login(self):
         """ Done button pressed after login and greeting - reset"""
@@ -327,7 +336,9 @@ class LoginBox:
     def done_create_user(self):
         """ Done button pressed after new user created and added to db - reset"""
         self.new_success_label.pack_forget()
+        self.create_failure_label.pack_forget()
         self.welcome_label.pack_forget()
+        self.reject_label.pack_forget()
         self.done_button.pack_forget()
         self.home()
 
