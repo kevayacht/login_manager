@@ -81,7 +81,7 @@ class LoginBox:
         self.greeting_label.pack()
         self.login_button.pack()
         self.login_new_user.pack()
-        self.exit_button.pack()
+        self.exit_button.pack(side='bottom')
 
     def remove_home_pack(self):
         """ Remove the home screen objects"""
