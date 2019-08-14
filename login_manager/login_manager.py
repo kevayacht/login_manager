@@ -207,26 +207,29 @@ class LoginBox:
 
         return success
 
-    def verify_new_user(self, bad_list=None):
+    def verify_new_user(self):
         """ Verify new user details provided. """
         success = True
         if '' in self.new_user_dictionary.values():  # nothing contained in the entry boxes
             success = False
 
+            key_list = []
+
+            self.new_user_bad_fields = []
             for key, value in self.new_user_dictionary.items():
+                key_list.append(key)
                 if value == '':
                     self.new_user_bad_fields.append(key)
-            print(self.new_user_bad_fields)
+
+            white_list = list(set(key_list) - set(self.new_user_bad_fields))
+            for i in range(len(white_list)):
+                code_string = "self.new_" + white_list[i] + "_entry.config(background='white')"
+                exec(code_string)
 
             for i in range(len(self.new_user_bad_fields)):
                 code_string = "self.new_" + self.new_user_bad_fields[i] + "_entry.config(background='red')"
-                print(code_string)
                 exec(code_string)
-
-            # TODO: get all the keys, and normalize those that are not empty back to white.,
-            #  also dont progress until we
-            #  have the data we need.
-            #  also clear the "troublesome" list
+                # print(code_string)
 
         return success
 
