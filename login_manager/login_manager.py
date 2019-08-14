@@ -1,22 +1,6 @@
 from tkinter import Tk, Label, Button, Entry, StringVar
 from db import create_db_table, create_user_db, find_user_db, get_user_detail
 from helper import raise_above_all, popup_message
-from tkinter import ttk
-
-
-# def popup_message():
-#     popup = Tk()
-#     popup.wm_title("Error")
-#     popup.geometry("250x150+525+150")
-#     raise_above_all(popup)
-#
-#     message_lable = Label(popup, text="--Dumbass--\n\nYou have not populated\n all the required data fields.\n "
-#                                       "Did you get confused?\n")
-#     message_lable.pack(side='top')
-#
-#     ok_button = Button(popup, text="Yes, I Apologise", command=popup.destroy)
-#     ok_button.pack()
-#     popup.mainloop()
 
 
 class LoginBox:
@@ -37,6 +21,7 @@ class LoginBox:
         self.greeting_label = Label(master, text="Welcome to the Login Manger")
         self.login_button = Button(master, command=self.login_click, text="Login", bg='Green', fg='Black')
         self.login_new_user = Button(master, command=self.create_new_user_click, text="Create New User", fg='Black')
+        self.exit_button = Button(master, command=master.destroy, text="Exit", fg='Black')
 
         self.home()
 
@@ -96,12 +81,14 @@ class LoginBox:
         self.greeting_label.pack()
         self.login_button.pack()
         self.login_new_user.pack()
+        self.exit_button.pack()
 
     def remove_home_pack(self):
         """ Remove the home screen objects"""
         self.greeting_label.pack_forget()
         self.login_button.pack_forget()
         self.login_new_user.pack_forget()
+        self.exit_button.pack_forget()
 
     def clear_login_data(self):
         """ Clear the dict data for login and login user data"""
