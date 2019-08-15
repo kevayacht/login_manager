@@ -137,11 +137,15 @@ class LoginBox:
 
     def submit_create_user(self):
         self.retrieve_create_user()
+
+        match = self.verify_password()
         success = self.verify_new_user()
 
-        if success:
+        if success and match:
+            create_user_db(self.new_user_dictionary)
             self.remove_create_user()
             self.successful_create_user()
+
         else:
             self.failed_create_user()
 
@@ -200,15 +204,12 @@ class LoginBox:
         if '' in self.new_user_dictionary.values():  # nothing contained in the entry boxes
             success = False
 
-            key_list = [] # make this a class var
-
-            self.new_user_bad_fields = []   # TODO: retieve the dict keys in a list
+            self.new_user_bad_fields = []
             for key, value in self.new_user_dictionary.items():
-                key_list.append(key)
                 if value == '':
                     self.new_user_bad_fields.append(key)
 
-            white_list = list(set(key_list) - set(self.new_user_bad_fields))
+            white_list = list(set(self.fields) - set(self.new_user_bad_fields))
             for i in range(len(white_list)):
                 code_string = "self.new_" + white_list[i] + "_entry.config(background='white')"
                 exec(code_string)
@@ -216,7 +217,6 @@ class LoginBox:
             for i in range(len(self.new_user_bad_fields)):
                 code_string = "self.new_" + self.new_user_bad_fields[i] + "_entry.config(background='red')"
                 exec(code_string)
-                # print(code_string)
 
         return success
 
@@ -291,19 +291,27 @@ class LoginBox:
         data = get_user_detail(self.login_user_dictionary["username"])
         self.current_user_data_dictionary = dict(zip(self.fields, data))
 
+    def verify_password(self):
+        suggested_password = self.new_password_entry.get()
+        confirm_password = self.new_password_confirm_entry.get()
+
+        if suggested_password == confirm_password:
+            success = True
+
+        else:
+            success = False
+
+        return success
+
     def retrieve_create_user(self):
         """ Retrieves the create new user data"""
-        # db interaction now.
         self.new_user_dictionary = {"first_name": self.new_first_name_entry.get(),
                                     "last_name": self.new_last_name_entry.get(),
                                     "username": self.new_username_entry.get(),
                                     "email": self.new_email_entry.get(),
                                     "phone_number": self.new_phone_number_entry.get(),
-                                    "password": self.new_password_entry.get()}
-
-        self.verify_new_user()
-        # there should be verifications and checking to make sure there isn't garbage being entered into the db.
-        create_user_db(self.new_user_dictionary)
+                                    "password": self.new_password_entry.get(),
+                                    "confirm_password": self.new_password_confirm_entry.get()}
 
     def successful_login(self):
         """ Forward Successful login """
