@@ -200,9 +200,9 @@ class LoginBox:
         if '' in self.new_user_dictionary.values():  # nothing contained in the entry boxes
             success = False
 
-            key_list = []
+            key_list = [] # make this a class var
 
-            self.new_user_bad_fields = []
+            self.new_user_bad_fields = []   # TODO: retieve the dict keys in a list
             for key, value in self.new_user_dictionary.items():
                 key_list.append(key)
                 if value == '':
@@ -285,6 +285,8 @@ class LoginBox:
         self.new_password_entry.delete(0, 'end')
         self.new_password_confirm_entry.delete(0, 'end')
 
+        self.clear_entry_forms()
+
     def get_additional_data(self):
         data = get_user_detail(self.login_user_dictionary["username"])
         self.current_user_data_dictionary = dict(zip(self.fields, data))
@@ -336,13 +338,6 @@ class LoginBox:
         popup_message()
 
         # TODO: also a bug where we go, back after this, fix it for future.
-        # self.reject_label_text.set("You have not populated\n all the required data fields.\n Did you got confused?")
-        # self.create_failure_label.pack()
-        # self.reject_label.pack()
-        # self.done_button.pack()
-        # failures can be due to:
-        # 1. More data needed.
-        # 2. Username taken
 
     def done_login(self):
         """ Done button pressed after login and greeting - reset"""
@@ -361,6 +356,13 @@ class LoginBox:
         self.reject_label.pack_forget()
         self.done_button.pack_forget()
         self.home()
+
+    def clear_entry_forms(self):
+        """ Clears the entry boxes of any changed background colours """
+        for i in range(len(self.fields)):
+            code_string = "self.new_" + self.fields[i] + "_entry.config(background='white')"
+            exec(code_string)
+            # print(code_string)
 
 
 def main():
