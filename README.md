@@ -22,6 +22,12 @@ The App is basically a playing application that will continuously cycle through 
 13. Git interaction. (see all commits)
 14. Refactoring possibilities. (cleaner code)
 15. Tuple and list to dictionary.
+16. Use of set characteristics
+17. The project also has a ton of simplification potential. 
+18. Full testing remains to be done on a clean linux environment. Possibly Windows as well. Just for the exp.
+
+### Immediate TODO's
+1. Password checking in user creation.
 
 ## Additions to Application
 1. Password hashing.
