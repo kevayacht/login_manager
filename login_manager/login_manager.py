@@ -117,14 +117,17 @@ class LoginBox:
         self.submit_button.pack(side='bottom')
 
     def back_login(self):
+        """Method to remove the login gui and revert to the home screen """
         self.remove_login()
         self.home()
 
     def back_create_user(self):
+        """ Method to remove the create user gui and revert to the home screen """
         self.remove_create_user()
         self.home()
 
     def submit_login(self):
+        """ Method to move forward with the login creation - verification etc. """
         self.retrieve_login()
         self.remove_login()
 
@@ -136,6 +139,7 @@ class LoginBox:
             self.failed_login()
 
     def submit_create_user(self):
+        """ Method to follow up on new user creation - verification etc. """
         self.retrieve_create_user()
 
         match = self.verify_password()
@@ -147,7 +151,7 @@ class LoginBox:
             self.successful_create_user()
 
         else:
-            self.failed_create_user()
+            popup_message()
 
     def back_click(self):
         """ Back button clicked """
@@ -179,6 +183,7 @@ class LoginBox:
         func()
 
     def retrieve_login(self):
+        """ Method to retrieve the login details in the entry boxes"""
         self.login_user_dictionary = {"username": self.username_entry.get(),
                                       "password": self.password_entry.get()}
         self.remove_login()
@@ -288,10 +293,12 @@ class LoginBox:
         self.clear_entry_forms()
 
     def get_additional_data(self):
+        """ MEthod to call the db helper functions that will return additional data on users from the db"""
         data = get_user_detail(self.login_user_dictionary["username"])
         self.current_user_data_dictionary = dict(zip(self.fields, data))
 
     def verify_password(self):
+        """ Method for password verification on new user creation."""
         suggested_password = self.new_password_entry.get()
         confirm_password = self.new_password_confirm_entry.get()
 
@@ -340,13 +347,6 @@ class LoginBox:
         self.welcome_label.pack()
         self.done_button.pack()
 
-    def failed_create_user(self):
-        """ Forward Failed create user """
-        # popup window
-        popup_message()
-
-        # TODO: also a bug where we go, back after this, fix it for future.
-
     def done_login(self):
         """ Done button pressed after login and greeting - reset"""
         self.login_success_label.pack_forget()
@@ -370,7 +370,6 @@ class LoginBox:
         for i in range(len(self.fields)):
             code_string = "self.new_" + self.fields[i] + "_entry.config(background='white')"
             exec(code_string)
-            # print(code_string)
 
 
 def main():

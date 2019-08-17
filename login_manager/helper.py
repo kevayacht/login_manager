@@ -2,11 +2,14 @@ from tkinter import Tk, Label, Button
 
 
 def raise_above_all(master):
+    """ Force topmost function."""
     master.attributes('-topmost', True)
     master.focus_force()
 
 
 def popup_message():
+    """ This function creates a popup message window that displayes a cute little message to the user that wrongfully
+    entered their details. """
     popup = Tk()
     popup.wm_title("Error")
     popup.geometry("250x150+525+150")
